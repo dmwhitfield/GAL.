@@ -14,7 +14,7 @@ float rWidth, rHeight;
 
 void setup()
 {
-  size(1280, 800);
+  size(960, 540);
   minim = new Minim(this);
   in = minim.getLineIn(Minim.STEREO, 512);
   fft = new FFT(in.bufferSize(), in.sampleRate());
