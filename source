@@ -1,0 +1,69 @@
+import ddf.minim.analysis.*;
+import ddf.minim.*;
+
+Minim minim;
+AudioInput in;
+FFT fft;
+int w; 
+PImage fade;
+
+int hVal;
+
+float rWidth, rHeight;
+
+
+void setup()
+{
+  size(1280, 800);
+  minim = new Minim(this);
+  in = minim.getLineIn(Minim.STEREO, 512);
+  fft = new FFT(in.bufferSize(), in.sampleRate());
+  fft.logAverages(50, 7);
+
+  stroke(255);
+  w = width/fft.avgSize();
+  strokeWeight((w * 1.2));
+  strokeCap(ROUND);
+
+
+  background(30, 30, 30);
+  String s = "";
+  textSize(64);
+  text(s, 430, 200);
+  fade = get(0, 0, width, height);
+
+  rWidth = width * 0.99;
+  rHeight = height * 0.99;
+  hVal = 0;
+}
+
+void draw()
+{
+
+
+  tint(255, 255, 255, 250);
+  image(fade, (width + rWidth) * 10, 0, rWidth, rHeight);
+  noTint();
+
+  fft.forward(in.mix);
+
+
+  colorMode(HSB);
+  stroke(hVal, 200, 200);
+  colorMode(RGB);
+  scale(1, -1);
+
+
+  for (int i = 0; i < fft.avgSize(); i++)
+  {
+    line((i * w) + (w * 2), height, (i * w) + (w * 2), height - fft.getAvg(i) * 900);
+  }
+
+  fade = get(0, 0, width, height);
+
+  hVal += 2;
+  if ( hVal > 200)
+  {
+    hVal = 0;
+  }
+}
